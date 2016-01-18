@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 func main() {
@@ -9,19 +10,14 @@ func main() {
 	fmt.Printf("Entered Basement at: %d\n", FindEntryPoint(input(), -1))
 }
 
+// Count returns the final floor from a string
 func Count(x string) int {
-	total := 0
-	for _, runeValue := range x {
-		strVal := string(runeValue)
-		if strVal == "(" {
-			total++
-		} else if strVal == ")" {
-			total--
-		}
-	}
-	return total
+	upCount := strings.Count(x, "(")
+	downCount := strings.Count(x, ")")
+	return upCount - downCount
 }
 
+// FindEntryPoint returns the first step at which a given floor is reached
 func FindEntryPoint(input string, floor int) int {
 	total := 0
 	for index, runeValue := range input {
