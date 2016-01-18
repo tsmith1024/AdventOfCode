@@ -1,5 +1,0 @@
-package AdventOfCode
-
-func main() {
-
-}
