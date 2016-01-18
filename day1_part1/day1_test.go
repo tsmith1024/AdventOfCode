@@ -24,3 +24,20 @@ func TestCount( t *testing.T) {
 		}
 	}
 }
+
+func TestEntryPoint( t *testing.T) {
+	cases := []struct{
+		input string
+		expected int
+	}{
+		{")", 1},
+		{"()())", 5},
+	}
+	for _, c := range cases {
+		basement := -1
+		result := FindEntryPoint(c.input, basement)
+		if result != c.expected {
+			t.Errorf("Floor(%d) not reached at character %d, but %d", basement, c.expected, result)
+		}
+	}
+}

@@ -6,6 +6,7 @@ import (
 
 func main() {
 	fmt.Printf("Final Floor is: %d\n", Count(input()))
+	fmt.Printf("Entered Basement at: %d\n", FindEntryPoint(input(), -1))
 }
 
 func Count(x string) int {
@@ -19,6 +20,22 @@ func Count(x string) int {
 		}
 	}
 	return total
+}
+
+func FindEntryPoint(input string, floor int) int {
+	total := 0
+	for index, runeValue := range input {
+		strVal := string(runeValue)
+		if strVal == "(" {
+			total++
+		} else if strVal == ")" {
+			total--
+		}
+		if total == floor {
+			return index + 1
+		}
+	}
+	return 0
 }
 
 func input() string {
