@@ -2,9 +2,9 @@ package main
 
 import "testing"
 
-func TestCount( t *testing.T) {
-	cases := []struct{
-		in string
+func TestCount(t *testing.T) {
+	cases := []struct {
+		in       string
 		expected int
 	}{
 		{"(", 1},
@@ -25,11 +25,12 @@ func TestCount( t *testing.T) {
 	}
 }
 
-func TestEntryPoint( t *testing.T) {
-	cases := []struct{
-		input string
+func TestEntryPoint(t *testing.T) {
+	cases := []struct {
+		input    string
 		expected int
 	}{
+		{"", 0},
 		{")", 1},
 		{"()())", 5},
 	}
@@ -37,7 +38,7 @@ func TestEntryPoint( t *testing.T) {
 		basement := -1
 		result := FindEntryPoint(c.input, basement)
 		if result != c.expected {
-			t.Errorf("Floor(%d) not reached at character %d, but %d", basement, c.expected, result)
+			t.Errorf("Floor(%d) reached at character %d, not %d", basement, result, c.expected)
 		}
 	}
 }
