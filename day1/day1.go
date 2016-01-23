@@ -5,48 +5,54 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 const inputFile = "day1_input.txt"
 const goalFloor = -1
-
-var currentFloor = 0
-var entryPoint = 0
 
 func main() {
 	file, err := os.Open(inputFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-	doWork(file, goalFloor)
-	fmt.Println("Final Floor:", currentFloor)
+	finalFloor, entryPoint := doWork(file, goalFloor)
+	fmt.Println("Final Floor:", finalFloor)
 	fmt.Printf("Entered Basement at: %d\n", entryPoint)
 }
 
 // read each line of the file, building the total and
 //looking for the expected entry point
-func doWork(file *os.File, goalFloor int) {
+func doWork(file *os.File, goalFloor int) (int, int) {
 	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanBytes)
-	counter := 0
 	entryFound := false
+	currentFloor := 0
+	entryPoint := 0
 	for scanner.Scan() {
-		counter += Count(scanner.Text())
-		if !entryFound && currentFloor == goalFloor {
-			entryFound = true
-			entryPoint = counter
+		line := scanner.Text()
+		if !entryFound {
+			index := 0
+			entryFound, index = findFloor(line, currentFloor, goalFloor)
+			entryPoint += index
 		}
+		currentFloor += count(line)
 	}
+	return currentFloor, entryPoint
 }
 
-// Count returns the final floor from a string
-func Count(x string) int {
-	if x == "(" {
-		currentFloor++
-		return 1
-	} else if x == ")" {
-		currentFloor--
-		return 1
+// Count takes a string and returns the change in floors on that line
+func count(line string) int {
+	return strings.Count(line, "(") - strings.Count(line, ")")
+}
+
+func findFloor(line string, startingFloor int, goalFloor int) (bool, int) {
+	letters := strings.Split(line, "")
+	floor := startingFloor
+	for char := range letters {
+		floor += count(letters[char])
+		if floor == goalFloor {
+			return true, char + 1
+		}
 	}
-	return 0
+	return false, len(line)
 }
