@@ -36,7 +36,7 @@ func TestEntryPoint(t *testing.T) {
 	}
 	for _, c := range cases {
 		basement := -1
-		result := FindEntryPoint(c.input, basement)
+		result, _ := FindEntryPoint(c.input, basement)
 		if result != c.expected {
 			t.Errorf("Floor(%d) reached at character %d, not %d", basement, result, c.expected)
 		}
