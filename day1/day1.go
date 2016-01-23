@@ -5,59 +5,48 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 )
 
 const inputFile = "day1_input.txt"
 const goalFloor = -1
+
+var currentFloor = 0
+var entryPoint = 0
 
 func main() {
 	file, err := os.Open(inputFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-	total, entryPoint := doWork(file, goalFloor)
-	fmt.Println("Final Floor:", total)
+	doWork(file, goalFloor)
+	fmt.Println("Final Floor:", currentFloor)
 	fmt.Printf("Entered Basement at: %d\n", entryPoint)
 }
 
-// read each line of the file, building the total and looking for the expected
-// entry point
-func doWork(file *os.File, goalFloor int) (int, int) {
+// read each line of the file, building the total and
+//looking for the expected entry point
+func doWork(file *os.File, goalFloor int) {
 	scanner := bufio.NewScanner(file)
-	total := 0
-	entryPoint := 0
+	scanner.Split(bufio.ScanBytes)
+	counter := 0
 	entryFound := false
 	for scanner.Scan() {
-		line := scanner.Text()
-		if !entryFound {
-			index := 0
-			index, entryFound = FindEntryPoint(line, goalFloor)
-			entryPoint += index
+		counter += Count(scanner.Text())
+		if !entryFound && currentFloor == goalFloor {
+			entryFound = true
+			entryPoint = counter
 		}
-		total += Count(line)
 	}
-	return total, entryPoint
 }
 
 // Count returns the final floor from a string
 func Count(x string) int {
-	return strings.Count(x, "(") - strings.Count(x, ")")
-}
-
-// FindEntryPoint returns the first step at which a given floor is reached
-func FindEntryPoint(input string, floor int) (int, bool) {
-	total := 0
-	for index, runeValue := range input {
-		strVal := string(runeValue)
-		if strVal == "(" {
-			total++
-		} else if strVal == ")" {
-			total--
-		}
-		if total == floor {
-			return index + 1, true
-		}
+	if x == "(" {
+		currentFloor++
+		return 1
+	} else if x == ")" {
+		currentFloor--
+		return 1
 	}
-	return len(input), false
+	return 0
 }
